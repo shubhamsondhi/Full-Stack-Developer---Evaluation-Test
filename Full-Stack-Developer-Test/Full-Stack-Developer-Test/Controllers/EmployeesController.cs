@@ -55,11 +55,10 @@ namespace Full_Stack_Developer_Test.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(employee).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _employeeService.Remove(id);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -81,8 +80,8 @@ namespace Full_Stack_Developer_Test.Controllers
         [HttpPost]
         public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
         {
-            _context.Employee.Add(employee);
-            await _context.SaveChangesAsync();
+           
+            await _employeeService.Update(employee);
 
             return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
         }
@@ -91,21 +90,20 @@ namespace Full_Stack_Developer_Test.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
-            var employee = await _context.Employee.FindAsync(id);
+            var employee = await _employeeService.GetOne(id);
             if (employee == null)
             {
                 return NotFound();
             }
 
-            _context.Employee.Remove(employee);
-            await _context.SaveChangesAsync();
+            await _employeeService.Remove(id);
 
             return NoContent();
         }
 
         private bool EmployeeExists(int id)
         {
-            return _context.Employee.Any(e => e.Id == id);
+            return _employeeService.Any(id);
         }
     }
 }

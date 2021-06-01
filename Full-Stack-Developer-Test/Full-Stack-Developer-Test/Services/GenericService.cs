@@ -39,6 +39,10 @@ namespace Full_Stack_Developer_Test.Service
             return unitOfWork.GetRepository<T>().GetFirstOrDefaultAsync(predicate: p => p.Id == id);
         }
 
+        public bool Any(int id)
+        {
+            return unitOfWork.GetRepository<T>().Count(predicate: p => p.Id == id)>0;
+        }
         public Task<int> Remove(int id)
         {
             unitOfWork.GetRepository<T>().Delete(id);
