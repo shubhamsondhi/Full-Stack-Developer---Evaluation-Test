@@ -25,14 +25,14 @@ namespace Full_Stack_Developer_Test.Controllers
 
         // GET: Employees
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetEmployee()
+        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetEmployees()
         {
             return await _employeeService.GetNameAndRoleAsync();
         }
 
    
         // GET: Employees/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}/employee")]
         public async Task<ActionResult<Employee>> GetEmployee(int id)
         {
             var employee = await _employeeService.GetOne(id);
@@ -45,35 +45,6 @@ namespace Full_Stack_Developer_Test.Controllers
             return employee;
         }
 
-        // PUT: Employees/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployee(int id, Employee employee)
-        {
-            if (id != employee.Id)
-            {
-                return BadRequest();
-            }
-
-
-            try
-            {
-                await _employeeService.Remove(id);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EmployeeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
 
         // POST: Employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -83,11 +54,11 @@ namespace Full_Stack_Developer_Test.Controllers
            
             await _employeeService.Update(employee);
 
-            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
+            return Ok(CreatedAtAction("GetEmployee", new { id = employee.Id }, employee));
         }
 
         // DELETE: Employees/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}/delete")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
             var employee = await _employeeService.GetOne(id);
@@ -99,11 +70,6 @@ namespace Full_Stack_Developer_Test.Controllers
             await _employeeService.Remove(id);
 
             return NoContent();
-        }
-
-        private bool EmployeeExists(int id)
-        {
-            return _employeeService.Any(id);
         }
     }
 }

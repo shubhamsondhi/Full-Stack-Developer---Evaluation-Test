@@ -8,10 +8,9 @@ namespace Full_Stack_Developer_Test.Service
 {
     public interface IServiceAsync<T>
     {
-        public IEnumerable<T> GetAll();
         public Task<int> Add(T obj);
-        public Task<int> Update(T obj);
-        public Task<int> Remove(int id);
+        public Task Update(T obj);
+        public Task Remove(int id);
         public Task<T> GetOne(int id);
         public Task<IEnumerable<T>> Get(Expression<Func<T, bool>> predicate);
     }

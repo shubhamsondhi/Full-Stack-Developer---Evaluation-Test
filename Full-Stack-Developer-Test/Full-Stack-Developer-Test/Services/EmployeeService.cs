@@ -12,18 +12,19 @@ namespace Full_Stack_Developer_Test.Services
 {
     public class EmployeeService<T> : GenericService<T> where T : Employee
     {
-        private readonly IUnitOfWork<EmployeeContext> unitOfWork;
-        public EmployeeService(IUnitOfWork<EmployeeContext> _unitOfWork) : base(_unitOfWork)
+        private readonly IUnitOfWork<EmployeeContext> _unitOfWork;
+        public EmployeeService(IUnitOfWork<EmployeeContext> unitOfWork) : base(unitOfWork)
         {
-            unitOfWork = _unitOfWork;
+            this._unitOfWork = unitOfWork;
         }
 
         public async Task<List<EmployeeResponse>> GetNameAndRoleAsync()
         {
-            var empolyee =await unitOfWork.GetRepository<Employee>().GetPagedListAsync(
-                pageSize:5000,
+            var empolyee =await _unitOfWork.GetRepository<Employee>().GetPagedListAsync(
+                pageSize:20,
+                orderBy:empolyee=>empolyee.OrderByDescending(s=>s.Id),
                 selector: employee => new EmployeeResponse() {
-                    Fullname = employee.FirstName+" "+ employee.LastName, 
+                    Fullname = employee.FullName, 
                     Id= employee.Id, Role=employee.Role });
          
             return empolyee.Items.ToList();

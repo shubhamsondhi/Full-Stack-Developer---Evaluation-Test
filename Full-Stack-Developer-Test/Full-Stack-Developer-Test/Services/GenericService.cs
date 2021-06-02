@@ -18,10 +18,10 @@ namespace Full_Stack_Developer_Test.Service
             unitOfWork = _unitOfWork;
         }
 
-        public Task<int> Add(T obj)
+        public async Task<int> Add(T obj)
         {
-            unitOfWork.GetRepository<T>().InsertAsync(obj);
-            return unitOfWork.SaveChangesAsync();
+            await unitOfWork.GetRepository<T>().InsertAsync(obj);
+            return await unitOfWork.SaveChangesAsync();
         }
 
         public Task<IEnumerable<T>> Get(Expression<Func<T, bool>> predicate)
@@ -29,43 +29,42 @@ namespace Full_Stack_Developer_Test.Service
             throw new NotImplementedException();
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<T> GetOne(int id)
         {
-            return unitOfWork.GetRepository<T>().GetAll();
-        }
-
-        public Task<T> GetOne(int id)
-        {
-            return unitOfWork.GetRepository<T>().GetFirstOrDefaultAsync(predicate: p => p.Id == id);
+            return await unitOfWork.GetRepository<T>().GetFirstOrDefaultAsync(predicate: p => p.Id == id);
         }
 
         public bool Any(int id)
         {
-            return unitOfWork.GetRepository<T>().Count(predicate: p => p.Id == id)>0;
+            return unitOfWork.GetRepository<T>().Count(predicate: p => p.Id == id) > 0;
         }
-        public Task<int> Remove(int id)
+        public async Task Remove(int id)
         {
             unitOfWork.GetRepository<T>().Delete(id);
-            return unitOfWork.SaveChangesAsync();
+            unitOfWork.SaveChanges();
         }
 
-        public Task<int> Update(T obj)
+        public async Task Update(T obj)
         {
             try
             {
                 unitOfWork.GetRepository<T>().Update(obj);
+                unitOfWork.SaveChanges();
 
 
             }
             catch (DbUpdateConcurrencyException)
             {
-               
-                    throw;
-                
+
+                throw;
+
             }
-            return unitOfWork.SaveChangesAsync();
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-   
+
     }
 }
